@@ -372,6 +372,8 @@ class GitHubEnrich2(Enrich):
             # If the comment comes from a review is "Approve" or "Change requests"
             # there is a "submitted_at" instead of "updated_at"
             if 'updated_at' not in comment:
+                if 'submitted_at' not in comment:
+                    continue
                 comment['updated_at'] = comment['submitted_at']
 
             ecomment = {}

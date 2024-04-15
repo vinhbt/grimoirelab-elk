@@ -173,6 +173,8 @@ def get_to_date(es_in, in_index, out_index, repository_url, interval):
     """ Get the appropriate to_date value for incremental insertion. """
     study_data_available = False
 
+    to_date = str_to_datetime("1970-01-01T00:00:00Z")
+
     if es_in.indices.exists(index=out_index):
         last_study_date = es_in.search(
             index=out_index,
@@ -193,6 +195,7 @@ def get_to_date(es_in, in_index, out_index, repository_url, interval):
             index=in_index,
             body=get_first_enriched_date(repository_url))["aggregations"]["1"]["hits"]["hits"][0]["_source"]
 
-        to_date = str_to_datetime(first_item_date["metadata__updated_on"])
+        if "metadata__updated_on" in first_item_date and first_item_date["metadata__updated_on"]:
+            to_date = str_to_datetime(first_item_date["metadata__updated_on"])
 
     return to_date
